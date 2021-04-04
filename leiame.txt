@@ -1,0 +1,23 @@
+Projeto PyApiTemplate
+
+Objetivo
+Criar um template de API usando Python.
+
+Features
+Implementar os principais verbos HTTP:
+
+    * GET
+    * POST
+    * PUT
+    * DELETE
+    
+Devolver os principais status:
+
+    * 200
+    * 401
+    * 404
+    
+Requisitos
+
+    * Bibliotecas do Python
+    * Como vincular um repositório local do GIT com um remoto.
