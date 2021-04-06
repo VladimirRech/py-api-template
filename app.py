@@ -9,7 +9,10 @@ api = Api(app)
 
 # Classes
 class Users(Resource):
-    pass
+    def get(self):
+        data = pd.read_csv('./csv/users.csv')  # read the csv file
+        data = data.to_dict()  # convert dataframe to dictionary
+        return {'data': data}, 200  # return data and 200 OK code.
 
 
 class Locations(Resource):
