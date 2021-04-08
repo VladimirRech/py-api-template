@@ -25,21 +25,27 @@ class Users(Resource):
 
         args = parser.parse_args()  # parse argumentos to dictionary
 
-        # create new data frame containing new values
-        new_data = pd.DataFrame({
-            'userId': args['userId'],
-            'name': args['name'],
-            'city': args['city'],
-            'locations': [[]]
-        })
-
         # read our CSV
         data = pd.read_csv(self._usersFile)  # read the csv file
-        # add the newly provided values
-        data = data.append(new_data, ignore_index=True)
-        # save back to CSV
-        data.to_csv('./csv/users.csv', index=False)
-        return {'data': data.to_dict()}, 200  # return data with 200 OK
+
+        if args['userId'] in list(data['userId']):
+            return {
+                'message': f"'{args['userId']}' already exists."
+            }, 401
+        else:
+            # create new data frame containing new values
+            new_data = pd.DataFrame({
+                'userId': args['userId'],
+                'name': args['name'],
+                'city': args['city'],
+                'locations': [[]]
+            })
+
+            # add the newly provided values
+            data = data.append(new_data, ignore_index=True)
+            # save back to CSV
+            data.to_csv('./csv/users.csv', index=False)
+            return {'data': data.to_dict()}, 200  # return data with 200 OK
 
 
 class Locations(Resource):
