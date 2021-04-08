@@ -9,8 +9,10 @@ api = Api(app)
 
 # Classes
 class Users(Resource):
+    _usersFile = "./csv/users.csv"
+
     def get(self):
-        data = pd.read_csv('./csv/users.csv')  # read the csv file
+        data = pd.read_csv(self._usersFile)  # read the csv file
         data = data.to_dict()  # convert dataframe to dictionary
         return {'data': data}, 200  # return data and 200 OK code.
 
@@ -32,7 +34,7 @@ class Users(Resource):
         })
 
         # read our CSV
-        data = pd.read_csv('./csv/users.csv')  # read the csv file
+        data = pd.read_csv(self._usersFile)  # read the csv file
         # add the newly provided values
         data = data.append(new_data, ignore_index=True)
         # save back to CSV
