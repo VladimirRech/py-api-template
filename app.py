@@ -47,6 +47,39 @@ class Users(Resource):
             data.to_csv('./csv/users.csv', index=False)
             return {'data': data.to_dict()}, 200  # return data with 200 OK
 
+    def put(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userId', required=True)
+        parser.add_argument('location', required=True)
+        args = parser.parse_args()
+
+        data = pd.read_csv(self._usersFile)
+
+        if args['userId'] in list(data['userId']):
+            # evaluate string of lists to lists
+            data['locations'] = data['locations'].apply(
+                lambda x: ast.literal_eval(x)
+            )
+
+            # select our user
+            user_data = data[data['userId'] == args['userId']]
+
+            # update users location
+            user_data['locations'] = user_data['locations'].values[0].append(
+                args['location'])
+
+            # save back to CSV
+            data.to_csv(self._usersFile, index=False)
+
+            # return data and 200 OK
+            return { 'data': data.to_dict() }, 200
+            
+        else:
+            # otherwise user does not exist
+            return {
+                'message': f"'{ args['userId'] }' user not found." 
+                }, 404
+
 
 class Locations(Resource):
     pass
