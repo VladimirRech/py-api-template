@@ -61,8 +61,7 @@ class Users(Resource):
                 lambda x: ast.literal_eval(x)
             )
 
-            # select our user
-            user_data = data[data['userId'] == args['userId']]
+            data[data['userId'] == args['userId']].delete()
 
             # update users location
             user_data['locations'] = user_data['locations'].values[0].append(
@@ -72,13 +71,35 @@ class Users(Resource):
             data.to_csv(self._usersFile, index=False)
 
             # return data and 200 OK
-            return { 'data': data.to_dict() }, 200
-            
+            return {'data': data.to_dict()}, 200
+
         else:
             # otherwise user does not exist
             return {
-                'message': f"'{ args['userId'] }' user not found." 
-                }, 404
+                'message': f"'{ args['userId'] }' user not found."
+            }, 404
+
+    def delete(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('userId', required=True)
+        args = parser.parse_args()
+
+        data = pd.read_csv(self._usersFile)
+
+        if args['userId'] in list(data['userId']):
+            # remove data entry matching given userId
+            data = data[data['userId'] != args['userId']]
+
+            # save back to CSV
+            data.to_csv(self._usersFile, index=False)
+
+            # return data and 200 OK
+            return {'data': data.to_dict()}, 200
+
+        else:
+            return {
+                'message': f"'{ args['userId'] }' user not found."
+            }, 404
 
 
 class Locations(Resource):
